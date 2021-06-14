@@ -1,0 +1,191 @@
+#include<stdio.h>
+#include<string.h>
+#define ADD 1
+#define CAST 2
+#define ADOPT 3
+#define OLD_ANIMALS 5
+#define EXIT 6
+#define PRINT 4
+#define THRESHOLD 5
+
+typedef struct Animal
+{
+	int age;
+	char name[256]; 
+	char entryDate[10];
+	char castrationDate[10];
+	char adoptionDate[10];
+	struct Animal* next;
+}Animal;
+//void addAnimal(Animal** head_ref);
+void castration(struct Animal** head);
+void addAnimal(Animal** head_ref);
+void adoption(struct Animal** head);
+//void printList(struct Animal* n);
+void printList(struct Animal* n);
+void reverseList(struct Animal **head_ref);
+void printAgeUnderThreshold(struct Animal* n);
+
+
+int main()
+{
+	int exitFlag = 0;
+	int option;
+	struct Animal* head = NULL;
+	struct Animal* reserve= head;	
+	while (exitFlag != 1)
+	{
+		printf("\n1. Add Animal\n");
+		printf("2. Castration\n");
+		printf("3. Adopt\n");
+		printf("4. Print\n");
+		printf("5. Print old animals\n");
+		printf("6. Exit\n");
+		scanf("%d", &option);
+		switch(option)
+		{
+		case ADD: addAnimal(&head);reserve= head;
+			break;
+		case CAST: castration(&head);head = reserve;
+			break;
+		case ADOPT: adoption(&head);head = reserve;
+			break;
+		case PRINT: printList(head);
+			break;
+		case OLD_ANIMALS: printAgeUnderThreshold(head);
+		    break;
+		//case OLD_ANIMALS: //printAgeUnderThreshold(head);
+		   // break;
+		case EXIT: exitFlag = 1;
+			break;
+		default: printf("Wrong option!\n");
+		exitFlag = 1;
+			break;
+		}
+	}
+	return 0;
+}
+
+void addAnimal(Animal** head_ref)
+{
+	int new_age;
+	char new_entryDate[10];
+	char new_name[256];
+	printf("Age: ");
+    scanf("%d", &new_age);
+    printf("\nEntry Date: ");
+    scanf("%s", &new_entryDate);
+    printf("\nName: ");
+    scanf("%s", &new_name);
+    
+    struct Animal* new_node = (struct Animal*)malloc(sizeof(struct Animal));
+    new_node->age = new_age;
+    memcpy(new_node->name, new_name, sizeof(new_node->name));
+    memcpy(new_node->entryDate, new_entryDate, sizeof(new_node->entryDate));
+    new_node->next = (*head_ref);
+  
+    (*head_ref) = new_node;
+}
+void castration(struct Animal** head)
+{
+    char name[256];
+	printList(*head);
+	printf("Choose animal\n");
+	scanf("%s", &name);
+	while ((*head) != NULL)
+    {
+        if(strcmp((*head)->name, name) == 0)
+        {
+            printf(" Castration date: ");
+            scanf("%s", (*head)->castrationDate);
+		}
+		else
+		{
+			printf("Missing Animal with this name\n");
+		}
+        (*head) = (*head)->next;
+    }
+}
+void adoption(struct Animal** head)
+{
+	char name[256];
+	printList(*head);
+	printf("Choose animal\n");
+	scanf("%s", &name);
+	while ((*head) != NULL)
+    {
+        if(strcmp((*head)->name, name) == 0)
+        {
+            printf(" Adoption date: ");
+            scanf("%s", (*head)->adoptionDate);
+		}
+		else
+		{
+			printf("Missing Animal with this name\n");
+		}
+        (*head) = (*head)->next;
+    }
+}
+
+void printList(struct Animal* n)
+{
+    while (n != NULL) {
+       printf("%s <--> %d age <--> Entry Date: ", n->name, n->age);
+       for(int i = 0; i < 10; i++)
+       {
+           printf("%c", n->entryDate[i]);
+       }
+       printf(" <--> Castration Date: ");
+       for(int i = 0; i < 10; i++)
+       {
+           printf("%c", n->castrationDate[i]);
+       }
+       printf(" <--> Adoption Date: ");
+               for(int i = 0; i < 10; i++)
+       {
+           printf("%c", n->adoptionDate[i]);
+       }
+       printf("\n");
+       // printf("%s <--> %dage <--> Entry Date: %s <--> Castration Date: %s <--> Adoption Date:%s\n", n->name, n->age, n->entryDate,n->castrationDate,n->adoptionDate);
+        n = n->next;
+    }
+}
+void reverseList(struct Animal **head_ref)
+{
+    struct Animal *current, *prev, *next;
+    current = *head_ref;
+    prev = NULL;
+    while (current != NULL)
+    {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }   
+    *head_ref = prev;
+}
+void printAgeUnderThreshold(struct Animal* n)
+{
+    while (n != NULL) {
+        if(n->age >= THRESHOLD)
+        {
+           printf("%s <--> %d age <--> Entry Date: ", n->name, n->age);
+           for(int i = 0; i < 10; i++)
+            {
+                printf("%c", n->entryDate[i]);
+            }
+            printf(" <--> Castration Date: ");
+            for(int i = 0; i < 10; i++)
+            {
+                printf("%c", n->castrationDate[i]);
+            }
+            printf(" <--> Adoption Date: ");
+            for(int i = 0; i < 10; i++)
+            {
+                printf("%c", n->adoptionDate[i]);
+            }
+            printf("\n");
+        }
+        n = n->next;
+    }
+}
